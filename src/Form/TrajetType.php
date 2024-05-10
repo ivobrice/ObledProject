@@ -15,7 +15,6 @@ use Symfony\Bundle\SecurityBundle\Security;
 class TrajetType extends AbstractType
 {
     private $user;
-
     public  function __construct(Security $security)
     {
         $this->user = $security->getUser();

@@ -82,7 +82,6 @@ class TrajetController extends AbstractController
             }
             $form = $addDataPost['form'];
         }
-
         return $this->render($trajet->getId() ? 'trajet/edit.html.twig' : 'trajet/new.html.twig', ['addDataPost' => $addDataPost, 'trajet' => $trajet, 'form' => $form]);
     }
 

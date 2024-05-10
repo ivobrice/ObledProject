@@ -89,7 +89,7 @@ class Trajet
     private ?string $restrictions = null;
 
     #[ORM\Column(length: 25, nullable: true)]
-    private ?string $marqVoiture = null;
+private ?string $marqVoiture = null;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $nbrePlaceArr = null;
