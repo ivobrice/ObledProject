@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class Trajet
 {
     use Timestampable, CreateCode;
-    
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -26,8 +26,8 @@ class Trajet
     #[ORM\Column(length: 100, nullable: true)]
     #[Assert\NotBlank(message: 'Entrer votre ville de départ et le pays départ!')]
     #[Assert\Length(
-        min: 2, 
-        max: 100, 
+        min: 2,
+        max: 100,
         minMessage: 'Le nom de la ville doit avoir au moins {{ limit }} lettres.',
         maxMessage: 'Le nom de la ville doit avoir au plus {{ limit }} lettres.'
     )]
@@ -36,8 +36,8 @@ class Trajet
     #[ORM\Column(length: 100, nullable: true)]
     #[Assert\NotBlank(message: 'Entrer la ville d\'arrivée et le pays d\'arrivée!')]
     #[Assert\Length(
-        min: 2, 
-        max: 100, 
+        min: 2,
+        max: 100,
         minMessage: 'Le nom de la ville doit avoir au moins {{ limit }} lettres.',
         maxMessage: 'Le nom de la ville doit avoir au plus {{ limit }} lettres.'
     )]
@@ -50,17 +50,17 @@ class Trajet
     private ?string $paysArrv = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\NotBlank(message: 'Entrer votre date de départ (ex:20/01/2020)')]
+    // #[Assert\NotBlank(message: 'Entrer votre date de départ (ex:20/01/2020)')]
     private ?\DateTimeImmutable $dateDept = null;
 
     //#[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Entrer l\'heure de départ.')]
-    #[Assert\PositiveOrZero(message: 'Donner un nombre chiffre.')]
+    #[Assert\PositiveOrZero(message: 'Donner un chiffre positif.')]
     private ?int $heureDept = null;
 
     //#[ORM\Column(type: Types::SMALLINT)]
     #[Assert\NotBlank(message: 'Préciser les minutes.')]
-    #[Assert\PositiveOrZero(message: 'Donner un nombre chiffre.')]
+    #[Assert\PositiveOrZero(message: 'Donner un chiffre positif.')]
     private ?int $minuteDept = null;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
@@ -68,10 +68,12 @@ class Trajet
     #[Assert\Positive(message: 'Donner un nombre positif différent de zero.')]
     private ?int $nbrDePlace = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 2, nullable: true)]
+    // #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 2, nullable: true)]
+    #[ORM\Column(nullable: true)]
     #[Assert\NotBlank(message: 'Entrer le prix que coûte une place.')]
     #[Assert\PositiveOrZero(message: 'Entrer un nombre positif ou zéro si les places sont gratuites.')]
-    private ?string $prixPlace = null;
+    // private ?string $prixPlace = null;
+    private ?int $prixPlace = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\NotBlank(message: 'Entrer le lieu du rendez-vous avec les passagers au départ.')]
@@ -225,12 +227,24 @@ private ?string $marqVoiture = null;
         return $this;
     }
 
-    public function getPrixPlace(): ?string
+    // public function getPrixPlace(): ?string
+    // {
+    //     return $this->prixPlace;
+    // }
+
+    // public function setPrixPlace(?string $prixPlace): static
+    // {
+    //     $this->prixPlace = $prixPlace;
+
+    //     return $this;
+    // }
+
+    public function getPrixPlace(): ?int
     {
         return $this->prixPlace;
     }
 
-    public function setPrixPlace(?string $prixPlace): static
+    public function setPrixPlace(?int $prixPlace): static
     {
         $this->prixPlace = $prixPlace;
 
@@ -416,7 +430,7 @@ private ?string $marqVoiture = null;
     #[Assert\Callback]
     public function isRestrictionsValid(ExecutionContextInterface $context): void
     {
-        if (preg_match($this->pattern, $this->getRestrictions())) { 
+        if (preg_match($this->pattern, $this->getRestrictions())) {
             $context
                 ->buildViolation('Contenu invalide car il contient un numéro de téléphone')
                 ->atPath('restrictions')
@@ -427,7 +441,7 @@ private ?string $marqVoiture = null;
     #[Assert\Callback]
     public function isPhoneValid(ExecutionContextInterface $context): void
     {
-        if (preg_match($this->pattern, $this->getPhone())) { 
+        if (preg_match($this->pattern, $this->getPhone())) {
             $context
                 ->buildViolation('Numéro de téléphone invalide (Ex: 07532214)')
                 ->atPath('phone')
