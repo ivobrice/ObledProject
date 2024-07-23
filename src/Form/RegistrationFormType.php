@@ -6,6 +6,7 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
@@ -13,6 +14,8 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Image;
 use Vich\UploaderBundle\Form\Type\VichImageType;
+use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
+use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 class RegistrationFormType extends AbstractType
 {
@@ -24,23 +27,41 @@ class RegistrationFormType extends AbstractType
                 'help' => 'Pas obligatoire.',
                 'required' => false
             ])
-            ->add('email')
-            ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
-                'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password'],
+            ->add('email', null, [
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Entrer votre mot de passe',
-                    ]),
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'Votre mot de passe doit avoir au moins {{ limit }} caractères',
-                        // max length allowed by Symfony for security reasons
-                        'max' => 4096,
-                    ]),
+                        'message' => 'Entrer votre adresse email.'
+                    ])
                 ],
+            ])
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'options' => [
+                    'attr' => [
+                        'autocomplete' => 'new-password',
+                        // 'class' => 'col-md-6',
+                    ],
+                ],
+                'first_options' => [
+                    'constraints' => [
+                        new NotBlank([
+                            'message' => 'Entrer le mot de passe.',
+                        ]),
+                        new Length([
+                            'min' => 6,
+                            'minMessage' => 'Votre mot de passe doit avoir au moins {{ limit }} caractères.',
+                            'max' => 4096,
+                        ]),
+                        // new PasswordStrength(),
+                        // new NotCompromisedPassword(),
+                    ],
+                    'label' => 'Mot de passe',
+                ],
+                'second_options' => [
+                    'label' => 'Répétez le mot de passe',
+                ],
+                'invalid_message' => 'Les mots de passe doivent être identiques',
+                'mapped' => false,
             ])
             ->add('phone', null, [
                 'label' => 'Téléphone',
